@@ -1,11 +1,6 @@
 import { URLS } from "@/lib/urls";
 
-type GA4TrafficRecord = {
-  url_path: string;
-  page_views: number;
-};
-
-type TrafficData = {
+export type TrafficData = {
   dimensionHeaders: { name: string }[];
   metricHeaders: { name: string; type: string }[];
   rows: {
@@ -27,7 +22,7 @@ export const getGA4TrafficData = async ({
   propertyName,
   accessToken,
   days = 30,
-}: GetGA4TrafficDataProps): Promise<GA4TrafficRecord[] | null> => {
+}: GetGA4TrafficDataProps): Promise<TrafficData | null> => {
   try {
     const endDate = new Date();
     const startDate = new Date();
@@ -67,35 +62,15 @@ export const getGA4TrafficData = async ({
       body: JSON.stringify(requestBody),
     });
 
-    if (trafficResponse.ok) {
-      const trafficData = (await trafficResponse.json()) as TrafficData;
-
-      // TODO: Check if there is a better way to format the data and extract more from it
-      if (trafficData.rows) {
-        const records: GA4TrafficRecord[] = trafficData.rows.map((row) => ({
-          url_path: row.dimensionValues[0].value || "/",
-          page_views: parseInt(row.metricValues[0].value) || 0,
-        }));
-
-        records.sort((a, b) => b.page_views - a.page_views);
-
-        return records;
-      } else {
-        console.error("No traffic data rows found in response");
-        return [];
-      }
-    } else {
-      const errorText = await trafficResponse.text();
-
-      console.error(
-        `Failed to fetch traffic data for property ${propertyName}:`,
-        trafficResponse.status,
-        trafficResponse.statusText,
-        errorText
+    if (!trafficResponse.ok) {
+      throw new Error(
+        `Failed to fetch traffic data for property ${propertyName}: ${trafficResponse.statusText}`
       );
-
-      return null;
     }
+
+    const trafficData = await trafficResponse.json();
+
+    return trafficData;
   } catch (error) {
     console.error(
       `Error fetching traffic data for property ${propertyName}:`,

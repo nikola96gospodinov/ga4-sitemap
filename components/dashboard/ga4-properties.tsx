@@ -2,6 +2,41 @@ import { auth } from "@/auth";
 import { getGA4Properties } from "@/services/get-ga4-properties.service";
 import { getG4Accounts } from "@/services/get-ga4-accounts.service";
 import { getGA4TrafficData } from "@/services/get-ga4-traffic-data.service";
+import {
+  mapSitemapHierarchy,
+  SitemapNode as SitemapNodeType,
+} from "@/lib/sitemap-mapper";
+
+const SitemapNode = ({
+  node,
+  depth = 0,
+}: {
+  node: SitemapNodeType;
+  depth?: number;
+}) => {
+  const indentAmount = depth * 16;
+
+  return (
+    <div className="space-y-1">
+      <div
+        className="flex justify-between items-center p-2 border rounded"
+        style={{ paddingLeft: `${indentAmount}px` }}
+      >
+        <span className="font-mono text-sm">{node.path}</span>
+        <span className="font-semibold">
+          {node.page_views.toLocaleString()}
+        </span>
+      </div>
+      {node.children.length > 0 && (
+        <div className="space-y-1">
+          {node.children.map((child, index) => (
+            <SitemapNode key={index} node={child} depth={depth + 1} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default async function GA4Properties() {
   const session = await auth();
@@ -33,14 +68,12 @@ export default async function GA4Properties() {
     );
   }
 
-  // Use the first account instead of hardcoding accounts[1]
   const selectedAccount = accounts[1];
   const properties = await getGA4Properties({
     accountName: selectedAccount.name,
     accessToken,
   });
 
-  // Get traffic data for the first property if available
   let trafficData = null;
   if (properties && properties.length > 0) {
     trafficData = await getGA4TrafficData({
@@ -49,6 +82,8 @@ export default async function GA4Properties() {
       days: 30,
     });
   }
+
+  const sitemap = trafficData ? mapSitemapHierarchy(trafficData) : null;
 
   return (
     <div className="space-y-4">
@@ -79,22 +114,14 @@ export default async function GA4Properties() {
         )}
       </div>
 
-      {trafficData && (
+      {sitemap && (
         <div className="space-y-2">
           <h3 className="text-lg font-medium">
             Traffic Data - Last 30 Days (First Property):
           </h3>
           <div className="space-y-2">
-            {trafficData.map((record, index) => (
-              <div
-                key={index}
-                className="flex justify-between items-center p-2 border rounded"
-              >
-                <span className="font-mono text-sm">{record.url_path}</span>
-                <span className="font-semibold">
-                  {record.page_views.toLocaleString()}
-                </span>
-              </div>
+            {sitemap.map((record, index) => (
+              <SitemapNode key={index} node={record} />
             ))}
           </div>
         </div>

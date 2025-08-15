@@ -1,7 +1,7 @@
 import { auth, signOut } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
-import GA4Properties from "@/components/ga4-properties";
+import GA4Properties from "@/components/dashboard/ga4-properties";
 
 export default async function Dashboard() {
   const session = await auth();
