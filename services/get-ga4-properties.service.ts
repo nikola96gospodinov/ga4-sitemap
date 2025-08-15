@@ -1,3 +1,5 @@
+import { URLS } from "@/lib/urls";
+
 type getGA4Props = {
   accountName: string;
   accessToken: string;
@@ -21,9 +23,7 @@ export const getGA4Properties = async ({
   accessToken,
 }: getGA4Props): Promise<GA4Property[] | null> => {
   try {
-    const apiUrl = `https://analyticsadmin.googleapis.com/v1beta/properties?filter=parent:${accountName}`;
-
-    console.log("Fetching properties from:", apiUrl);
+    const apiUrl = URLS.GA4.PROPERTIES(accountName);
 
     const propertiesResponse = await fetch(apiUrl, {
       headers: {
@@ -33,22 +33,25 @@ export const getGA4Properties = async ({
 
     if (propertiesResponse.ok) {
       const propertiesData = await propertiesResponse.json();
-      return propertiesData.properties || [];
+      return propertiesData.properties ?? [];
     } else {
       const errorText = await propertiesResponse.text();
-      console.warn(
+
+      console.error(
         `Failed to fetch properties for account ${accountName}:`,
         propertiesResponse.status,
         propertiesResponse.statusText,
         errorText
       );
+
       return null;
     }
   } catch (error) {
-    console.warn(
+    console.error(
       `Error fetching properties for account ${accountName}:`,
       error
     );
+
     return null;
   }
 };

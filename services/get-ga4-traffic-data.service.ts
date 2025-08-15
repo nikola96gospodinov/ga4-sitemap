@@ -1,3 +1,5 @@
+import { URLS } from "@/lib/urls";
+
 type GA4TrafficRecord = {
   url_path: string;
   page_views: number;
@@ -34,7 +36,7 @@ export const getGA4TrafficData = async ({
     const startDateStr = startDate.toISOString().split("T")[0];
     const endDateStr = endDate.toISOString().split("T")[0];
 
-    const apiUrl = `https://analyticsdata.googleapis.com/v1beta/${propertyName}:runReport`;
+    const apiUrl = URLS.GA4.TRAFFIC(propertyName);
 
     const requestBody = {
       dateRanges: [
@@ -79,24 +81,27 @@ export const getGA4TrafficData = async ({
 
         return records;
       } else {
-        console.warn("No traffic data rows found in response");
+        console.error("No traffic data rows found in response");
         return [];
       }
     } else {
       const errorText = await trafficResponse.text();
-      console.warn(
+
+      console.error(
         `Failed to fetch traffic data for property ${propertyName}:`,
         trafficResponse.status,
         trafficResponse.statusText,
         errorText
       );
+
       return null;
     }
   } catch (error) {
-    console.warn(
+    console.error(
       `Error fetching traffic data for property ${propertyName}:`,
       error
     );
+
     return null;
   }
 };

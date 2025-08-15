@@ -1,3 +1,5 @@
+import { URLS } from "@/lib/urls";
+
 type GoogleAccount = {
   name: string;
   createTime: string;
@@ -10,14 +12,13 @@ export const getG4Accounts = async (
   accessToken: string
 ): Promise<GoogleAccount[] | null> => {
   try {
-    const accountsResponse = await fetch(
-      `https://analyticsadmin.googleapis.com/v1beta/accounts`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const url = URLS.GA4.ACCOUNTS();
+
+    const accountsResponse = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
     if (!accountsResponse.ok) {
       const errorText = await accountsResponse.text();
