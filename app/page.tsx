@@ -14,7 +14,7 @@ export default async function Home() {
 
   return (
     <LandingBackground>
-      <div className="text-center max-w-2xl mx-auto">
+      <div className="text-center max-w-2xl h-screen flex flex-col justify-center items-center mx-auto">
         <Heading
           text="Welcome to GA4 Sitemap Clustering"
           className="text-6xl mb-3 pb-1"

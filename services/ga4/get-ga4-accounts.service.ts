@@ -1,6 +1,7 @@
 import { URLS } from "@/lib/urls";
+import { useQuery } from "@tanstack/react-query";
 
-type GoogleAccount = {
+export type GoogleAccount = {
   name: string;
   createTime: string;
   updateTime: string;
@@ -8,7 +9,7 @@ type GoogleAccount = {
   regionCode: string;
 };
 
-export const getG4Accounts = async (
+export const getGA4Accounts = async (
   accessToken: string
 ): Promise<GoogleAccount[] | null> => {
   try {
@@ -46,4 +47,11 @@ export const getG4Accounts = async (
     console.error("Error fetching accounts:", error);
     return null;
   }
+};
+
+export const useGetGA4Accounts = (accessToken: string) => {
+  return useQuery({
+    queryKey: ["ga4-accounts"],
+    queryFn: () => getGA4Accounts(accessToken),
+  });
 };

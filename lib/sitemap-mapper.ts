@@ -1,4 +1,4 @@
-import { TrafficData } from "@/services/get-ga4-traffic-data.service";
+import { TrafficData } from "@/services/ga4/get-ga4-traffic-data.service";
 
 export type GA4TrafficRecord = {
   url_path: string;

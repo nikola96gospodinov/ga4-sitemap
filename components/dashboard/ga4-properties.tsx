@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
-import { getGA4Properties } from "@/services/get-ga4-properties.service";
-import { getG4Accounts } from "@/services/get-ga4-accounts.service";
-import { getGA4TrafficData } from "@/services/get-ga4-traffic-data.service";
+import { getGA4Properties } from "@/services/ga4/get-ga4-properties.service";
+import { getGA4Accounts } from "@/services/ga4/get-ga4-accounts.service";
+import { getGA4TrafficData } from "@/services/ga4/get-ga4-traffic-data.service";
 import {
   mapSitemapHierarchy,
   SitemapNode as SitemapNodeType,
@@ -58,7 +58,7 @@ export default async function GA4Properties() {
     );
   }
 
-  const accounts = await getG4Accounts(accessToken);
+  const accounts = await getGA4Accounts(accessToken);
 
   if (!accounts || accounts.length === 0) {
     return (
