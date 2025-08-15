@@ -14,41 +14,34 @@ export type GoogleAccount = {
 export const getGA4Accounts = async (
   accessToken: string
 ): Promise<GoogleAccount[] | null> => {
-  try {
-    const url = URLS.GA4.ACCOUNTS();
+  const apiUrl = URLS.GA4.ACCOUNTS();
 
-    const accountsResponse = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+  const accountsResponse = await fetch(apiUrl, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
 
-    if (!accountsResponse.ok) {
-      const errorText = await accountsResponse.text();
+  if (!accountsResponse.ok) {
+    const errorText = await accountsResponse.text();
 
-      console.error(
-        "Accounts response:",
-        accountsResponse.status,
-        accountsResponse.statusText,
-        errorText
-      );
+    console.error(
+      "Accounts response:",
+      accountsResponse.status,
+      accountsResponse.statusText,
+      errorText
+    );
 
-      throw new Error(
-        `Failed to fetch accounts: ${accountsResponse.statusText}`
-      );
-    }
-
-    const accountsData = await accountsResponse.json();
-
-    if (!accountsData.accounts || accountsData.accounts.length === 0) {
-      return [];
-    }
-
-    return accountsData.accounts;
-  } catch (error) {
-    console.error("Error fetching accounts:", error);
-    return null;
+    throw new Error(`Failed to fetch accounts: ${accountsResponse.statusText}`);
   }
+
+  const accountsData = await accountsResponse.json();
+
+  if (!accountsData.accounts || accountsData.accounts.length === 0) {
+    return [];
+  }
+
+  return accountsData.accounts;
 };
 
 export const useGetGA4Accounts = () => {

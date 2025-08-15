@@ -3,19 +3,20 @@
 import { useGetGA4Accounts } from "@/services/ga4/get-ga4-accounts.service";
 import { UsersRound } from "lucide-react";
 import { Spinner } from "../../../ui/spinner";
-import { AccountCombobox } from "./account-combobox";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Combobox } from "@/components/ui/combobox";
 
 type Props = {
   selectedAccount: string;
   setSelectedAccount: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export const SelectAccount = ({
+export const AccountSelector = ({
   selectedAccount,
   setSelectedAccount,
 }: Props) => {
-  const { data: accounts, isLoading } = useGetGA4Accounts();
+  const { data: accounts, isLoading, isError, refetch } = useGetGA4Accounts();
 
   useEffect(() => {
     if (accounts && accounts.length === 1) {
@@ -29,6 +30,22 @@ export const SelectAccount = ({
         <div className="flex flex-col justify-center items-center h-full gap-4">
           <Spinner />
           <p>Loading accounts...</p>
+        </div>
+      );
+    }
+
+    if (isError) {
+      return (
+        <div className="flex flex-col justify-center items-center h-full">
+          <p className="text-red-700 text-lg font-semibold mb-1">
+            Something went wrong...
+          </p>
+          <p className="text-slate-950 text-sm  mb-4">
+            Please try again or come back later.
+          </p>
+          <Button size="sm" onClick={() => refetch()}>
+            Try again
+          </Button>
         </div>
       );
     }
@@ -59,20 +76,20 @@ export const SelectAccount = ({
 
     return (
       <>
-        <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-tl-lg rounded-br-lg transform -translate-y-8 -translate-x-8 border-l-2 border-t-2 border-slate-200 w-fit -mb-4">
-          <UsersRound className="w-4 h-4" />
-          <h2 className="text-l text-slate-800 font-bold">Select Account</h2>
-        </div>
-
         <p className="text-slate-950 mb-0.5">
           It seems like you have more than one GA4 account. Select the one you
-          want to use.
+          want to use below:
         </p>
 
-        <AccountCombobox
-          accounts={accounts}
-          selectedAccount={selectedAccount}
-          setSelectedAccount={setSelectedAccount}
+        <Combobox
+          options={accounts.map((account) => ({
+            value: account.name,
+            label: account.displayName,
+          }))}
+          selectedValue={selectedAccount}
+          onValueChange={setSelectedAccount}
+          showValueInOptions
+          formatValueForDisplay={(value) => value.replace("accounts/", "")}
         />
       </>
     );
@@ -80,7 +97,14 @@ export const SelectAccount = ({
 
   return (
     <div className="flex flex-col gap-4 bg-slate-300/30 p-8 rounded-lg mt-4">
-      <div className="flex flex-col gap-2">{content()}</div>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2 bg-slate-700 px-4 py-2 rounded-tl-lg rounded-br-lg transform -translate-y-8 -translate-x-8 border-l-2 border-t-2 border-slate-200 w-fit -mb-4">
+          <UsersRound className="w-4 h-4 text-white" />
+          <h2 className="text-l text-white font-bold">Select Account</h2>
+        </div>
+
+        {content()}
+      </div>
     </div>
   );
 };

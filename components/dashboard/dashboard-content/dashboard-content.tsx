@@ -1,20 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { SelectAccount } from "./select-account/select-account";
-import { DataChart } from "./data-chart/data-chart";
+import { AccountSelector } from "./account-selector/account-selector";
+import { PropertySelector } from "./chart/property-selector";
 
 export const DashboardContent = () => {
   const [selectedAccount, setSelectedAccount] = useState<string>("");
 
   return (
     <>
-      <SelectAccount
+      <AccountSelector
         selectedAccount={selectedAccount}
         setSelectedAccount={setSelectedAccount}
       />
 
-      {selectedAccount && <DataChart selectedAccount={selectedAccount} />}
+      {selectedAccount && (
+        <PropertySelector selectedAccount={selectedAccount} />
+      )}
     </>
   );
 };

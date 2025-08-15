@@ -1,4 +1,7 @@
 import { URLS } from "@/lib/urls";
+import { GA4_KEYS } from "./ga4-keys";
+import { useSession } from "next-auth/react";
+import { useQuery } from "@tanstack/react-query";
 
 type getGA4Props = {
   accountName: string;
@@ -21,37 +24,48 @@ type GA4Property = {
 export const getGA4Properties = async ({
   accountName,
   accessToken,
-}: getGA4Props): Promise<GA4Property[] | null> => {
-  try {
-    const apiUrl = URLS.GA4.PROPERTIES(accountName);
+}: getGA4Props): Promise<GA4Property[]> => {
+  const apiUrl = URLS.GA4.PROPERTIES(accountName);
 
-    const propertiesResponse = await fetch(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+  const propertiesResponse = await fetch(apiUrl, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
 
-    if (propertiesResponse.ok) {
-      const propertiesData = await propertiesResponse.json();
-      return propertiesData.properties ?? [];
-    } else {
-      const errorText = await propertiesResponse.text();
+  if (!propertiesResponse.ok) {
+    const errorText = await propertiesResponse.text();
 
-      console.error(
-        `Failed to fetch properties for account ${accountName}:`,
-        propertiesResponse.status,
-        propertiesResponse.statusText,
-        errorText
-      );
-
-      return null;
-    }
-  } catch (error) {
     console.error(
-      `Error fetching properties for account ${accountName}:`,
-      error
+      `Failed to fetch properties for account ${accountName}:`,
+      propertiesResponse.status,
+      propertiesResponse.statusText,
+      errorText
     );
 
-    return null;
+    throw new Error(
+      `Failed to fetch properties for account ${accountName}: ${propertiesResponse.statusText}`
+    );
   }
+
+  const propertiesData = await propertiesResponse.json();
+
+  if (!propertiesData.properties || propertiesData.properties.length === 0) {
+    return [];
+  }
+
+  return propertiesData.properties;
+};
+
+export const useGetGA4Properties = (accountName: string) => {
+  const session = useSession();
+
+  return useQuery({
+    queryKey: GA4_KEYS.PROPERTIES(accountName),
+    queryFn: () =>
+      getGA4Properties({
+        accountName,
+        accessToken: session.data?.accessToken ?? "",
+      }),
+  });
 };
