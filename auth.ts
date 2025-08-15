@@ -1,6 +1,15 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 
+declare module "next-auth" {
+  interface Session {
+    accessToken?: string;
+  }
+  interface JWT {
+    accessToken?: string;
+  }
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Google({
@@ -9,7 +18,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorization: {
         params: {
           scope:
-            "openid email profile https://www.googleapis.com/auth/analytics.readonly",
+            "openid email profile https://www.googleapis.com/auth/analytics.readonly https://www.googleapis.com/auth/analytics.manage.users.readonly",
         },
       },
     }),
@@ -19,6 +28,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user && token.sub) {
         session.user.id = token.sub;
       }
+      session.accessToken = token.accessToken as string | undefined;
       return session;
     },
     async jwt({ token, user, account }) {
