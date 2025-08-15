@@ -1,5 +1,7 @@
 import { URLS } from "@/lib/urls";
+import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
+import { GA4_KEYS } from "./ga4-keys";
 
 export type GoogleAccount = {
   name: string;
@@ -49,9 +51,11 @@ export const getGA4Accounts = async (
   }
 };
 
-export const useGetGA4Accounts = (accessToken: string) => {
+export const useGetGA4Accounts = () => {
+  const session = useSession();
+
   return useQuery({
-    queryKey: ["ga4-accounts"],
-    queryFn: () => getGA4Accounts(accessToken),
+    queryKey: GA4_KEYS.ACCOUNTS(session.data?.user?.id ?? ""),
+    queryFn: () => getGA4Accounts(session.data?.accessToken ?? ""),
   });
 };

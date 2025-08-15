@@ -7,11 +7,7 @@ import { DashboardContent } from "@/components/dashboard/dashboard-content/dashb
 export default async function Dashboard() {
   const session = await auth();
 
-  if (!session) {
-    redirect("/");
-  }
-
-  if (!session.accessToken) {
+  if (!session || !session.accessToken) {
     redirect("/");
   }
 
@@ -19,7 +15,7 @@ export default async function Dashboard() {
     <LandingBackground>
       <DashboardHeader />
 
-      <DashboardContent accessToken={session.accessToken} />
+      <DashboardContent />
     </LandingBackground>
   );
 }

@@ -4,19 +4,24 @@ import { useGetGA4Accounts } from "@/services/ga4/get-ga4-accounts.service";
 import { UsersRound } from "lucide-react";
 import { Spinner } from "../../../ui/spinner";
 import { AccountCombobox } from "./account-combobox";
+import { useEffect } from "react";
 
 type Props = {
-  accessToken: string;
   selectedAccount: string;
   setSelectedAccount: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export const SelectAccount = ({
-  accessToken,
   selectedAccount,
   setSelectedAccount,
 }: Props) => {
-  const { data: accounts, isLoading } = useGetGA4Accounts(accessToken);
+  const { data: accounts, isLoading } = useGetGA4Accounts();
+
+  useEffect(() => {
+    if (accounts && accounts.length === 1) {
+      setSelectedAccount(accounts[0].name);
+    }
+  }, [accounts, setSelectedAccount]);
 
   const content = () => {
     if (isLoading) {
