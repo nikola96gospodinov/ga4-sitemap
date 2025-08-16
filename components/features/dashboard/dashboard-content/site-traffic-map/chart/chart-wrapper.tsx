@@ -11,6 +11,8 @@ import { TestDataScenario } from "./test-data-scenario";
 import { GA4TreemapChart } from "./treemap";
 import { ChartSelection } from "./chart-selection";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 type Props = {
   selectedProperty: string;
 };
@@ -45,9 +47,10 @@ export const ChartWrapper = ({ selectedProperty }: Props) => {
   const { data: mockData, isLoading: mockDataLoading } =
     useMockGA4TrafficData(mockScenario);
 
-  const data = useMockData ? mockData : realData;
-  const isLoading = useMockData ? mockDataLoading : realDataLoading;
-  const isError = useMockData ? false : realDataError;
+  const data = useMockData && !isProduction ? mockData : realData;
+  const isLoading =
+    useMockData && !isProduction ? mockDataLoading : realDataLoading;
+  const isError = useMockData && !isProduction ? false : realDataError;
 
   const transformedData = useMemo(() => {
     if (!data) return [];
@@ -96,18 +99,24 @@ export const ChartWrapper = ({ selectedProperty }: Props) => {
         <h3 className="text-lg font-semibold text-slate-900">
           Traffic Visualization
         </h3>
-        <p className="text-sm text-slate-600">
-          Click on nodes to expand/collapse their children. Node size represents
-          traffic volume.
-        </p>
+        {chartType === "scatter" && (
+          <p className="text-sm text-slate-600">
+            Click on nodes to expand/collapse their children. Node size
+            represents traffic volume.
+          </p>
+        )}
       </div>
-      {/* TODO: Remove this */}
-      <TestDataScenario
-        useMockData={useMockData}
-        setUseMockData={setUseMockData}
-        mockScenario={mockScenario}
-        setMockScenario={setMockScenario}
-      />
+
+      {/* This is purely for testing locally */}
+      {!isProduction && (
+        <TestDataScenario
+          useMockData={useMockData}
+          setUseMockData={setUseMockData}
+          mockScenario={mockScenario}
+          setMockScenario={setMockScenario}
+        />
+      )}
+
       <ChartSelection chartType={chartType} setChartType={setChartType} />
       {chartType === "scatter" && (
         <GA4ScatterChart transformedData={transformedData} />
