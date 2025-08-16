@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AccountSelector } from "./account-selector/account-selector";
-import { PropertySelector } from "./chart/property-selector";
+import { PropertySelector } from "./site-traffic-map/property-selector";
 
 export const DashboardContent = () => {
   const [selectedAccount, setSelectedAccount] = useState<string>("");

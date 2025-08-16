@@ -4,6 +4,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useGetGA4Properties } from "@/services/ga4/get-ga4-properties.service";
 import { ChartScatter } from "lucide-react";
 import { useState } from "react";
+import { ChartWrapper } from "./chart/chart-wrapper";
 
 type Props = {
   selectedAccount: string;
@@ -98,6 +99,10 @@ export const PropertySelector = ({ selectedAccount }: Props) => {
         </div>
 
         {content()}
+
+        {selectedProperty && (
+          <ChartWrapper selectedProperty={selectedProperty} />
+        )}
       </div>
     </div>
   );

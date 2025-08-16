@@ -6,5 +6,5 @@ export const GA4_KEYS = {
     "properties",
     accountName,
   ],
-  TRAFFIC: () => [GA4_KEYS._base, "traffic"],
+  TRAFFIC: (propertyName: string) => [GA4_KEYS._base, "traffic", propertyName],
 };

@@ -16,7 +16,7 @@ export type SitemapNode = {
 export const mapSitemapHierarchy = (
   trafficData: TrafficData
 ): SitemapNode[] => {
-  if (!trafficData.rows.length) return [];
+  if (!trafficData?.rows?.length) return [];
 
   const rootNode: SitemapNode = {
     path: "/",
