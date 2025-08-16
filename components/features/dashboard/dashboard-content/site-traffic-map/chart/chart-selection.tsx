@@ -8,7 +8,7 @@ type Props = {
 
 export const ChartSelection = ({ chartType, setChartType }: Props) => {
   return (
-    <div className="flex flex-col gap-2 items-center justify-start mt-8 mb-2">
+    <div className="flex flex-col gap-2 items-center justify-start mb-2">
       <p className="text-sm text-slate-600">Chart Type:</p>
       <div className="inline-flex bg-slate-100 rounded-full p-1">
         <Button
