@@ -16,7 +16,7 @@ type Props = {
   transformedData: SitemapNode[];
 };
 
-export const Chart = ({ transformedData }: Props) => {
+export const GA4ScatterChart = ({ transformedData }: Props) => {
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
 
   const handleNodeClick = (node: ChartNode) => {
