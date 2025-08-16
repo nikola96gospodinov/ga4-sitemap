@@ -23,6 +23,7 @@ export type ChartNode = {
   isExpanded: boolean;
   hasChildren: boolean;
   cluster: number;
+  parentPath?: string;
 };
 
 export const ChartWrapper = ({ selectedProperty }: Props) => {
