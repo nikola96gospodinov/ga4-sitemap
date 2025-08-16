@@ -45,9 +45,36 @@ export const GA4ScatterChart = ({ transformedData }: Props) => {
       <div className="w-full h-[36rem] border border-slate-300 rounded-lg">
         <ResponsiveContainer className="w-full h-full">
           <ScatterChart margin={{ top: 48, right: 48, bottom: 48, left: 48 }}>
-            <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              opacity={0.3}
+              vertical={false}
+            />
+
             <XAxis type="number" dataKey="x" domain={["auto", "auto"]} hide />
-            <YAxis type="number" dataKey="y" domain={["auto", "auto"]} hide />
+
+            <YAxis
+              type="number"
+              dataKey="depth"
+              domain={[0, "dataMax"]}
+              tickMargin={16}
+              label={{
+                value: "Depth",
+                angle: -90,
+                position: "insideLeft",
+                style: { fill: "#334155", fontWeight: 600, fontSize: 16 },
+              }}
+              tickFormatter={(value) => (Number.isInteger(value) ? value : "")}
+              allowDecimals={false}
+              tick={{ fill: "#64748b", fontSize: 14, fontWeight: 500 }}
+              axisLine={{
+                stroke: "#cbd5e1",
+                strokeWidth: 2,
+                strokeDasharray: "3 3",
+              }}
+              tickLine={{ stroke: "#cbd5e1", strokeWidth: 2 }}
+            />
+
             <Tooltip
               content={({ payload }) => {
                 if (payload && payload.length > 0) {
@@ -59,7 +86,7 @@ export const GA4ScatterChart = ({ transformedData }: Props) => {
                         Page Views: {formatPageViews(tooltipData.page_views)}
                       </p>
                       <p className="text-sm text-slate-600">
-                        Depth: {tooltipData.cluster}
+                        Depth: {tooltipData.depth}
                       </p>
 
                       {tooltipData.hasChildren && (
@@ -75,6 +102,7 @@ export const GA4ScatterChart = ({ transformedData }: Props) => {
                 return null;
               }}
             />
+
             <Scatter
               data={data}
               dataKey="y"
@@ -104,6 +132,7 @@ export const GA4ScatterChart = ({ transformedData }: Props) => {
           </ScatterChart>
         </ResponsiveContainer>
       </div>
+
       <ScatterLegend />
     </>
   );

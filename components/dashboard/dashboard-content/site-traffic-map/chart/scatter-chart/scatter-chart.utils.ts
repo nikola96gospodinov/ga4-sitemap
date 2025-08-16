@@ -175,28 +175,6 @@ export const getChartData = (
     ...transformedData.map((node) => getMaxPageViews(node))
   );
 
-  const getMaxDepth = (nodes: SitemapNode[], currentDepth = 0): number => {
-    let maxDepth = currentDepth;
-    for (const node of nodes) {
-      if (node.children.length > 0) {
-        maxDepth = Math.max(
-          maxDepth,
-          getMaxDepth(node.children, currentDepth + 1)
-        );
-      }
-    }
-    return maxDepth;
-  };
-
-  const maxDepth = getMaxDepth(transformedData);
-
-  const baseSpacing = maxDepth <= 3 ? 40 : 100;
-  const totalHeight = 400;
-  const spacing = Math.min(
-    baseSpacing,
-    totalHeight / Math.max(maxDepth + 1, 4)
-  );
-
   const processNode = (
     node: SitemapNode,
     depth: number,
@@ -205,7 +183,7 @@ export const getChartData = (
   ) => {
     const radius = Math.max(5, Math.sqrt(node.page_views / maxPageViews) * 40);
 
-    const y = depth * spacing + 33;
+    const y = depth;
 
     let x = xOffset + radius;
 
