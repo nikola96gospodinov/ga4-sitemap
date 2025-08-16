@@ -95,18 +95,6 @@ export const ChartWrapper = ({ selectedProperty }: Props) => {
 
   return (
     <div className="flex flex-col gap-4 bg-white p-8 rounded-lg mt-4">
-      <div className="flex flex-col gap-2">
-        <h3 className="text-lg font-semibold text-slate-900">
-          Traffic Visualization
-        </h3>
-        {chartType === "scatter" && (
-          <p className="text-sm text-slate-600">
-            Click on nodes to expand/collapse their children. Node size
-            represents traffic volume.
-          </p>
-        )}
-      </div>
-
       {/* This is purely for testing locally */}
       {!isProduction && (
         <TestDataScenario
