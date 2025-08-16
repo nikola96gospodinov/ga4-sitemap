@@ -1,4 +1,4 @@
-export const Legend = () => {
+export const ScatterLegend = () => {
   return (
     <div className="flex flex-col gap-2 p-4 bg-slate-100 rounded-lg">
       <p className="text-slate-950">Does it have subpaths?</p>

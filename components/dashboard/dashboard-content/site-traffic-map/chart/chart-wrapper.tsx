@@ -6,9 +6,10 @@ import {
 import { useMemo, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import { Legend } from "./legend";
-import { GA4ScatterChart } from "./scatter-chart";
+import { GA4ScatterChart } from "./scatter-chart/scatter-chart";
 import { TestDataScenario } from "./test-data-scenario";
+import { GA4SankeyChart } from "./snakey-chart";
+import { ChartSelection } from "./chart-selection";
 
 type Props = {
   selectedProperty: string;
@@ -28,16 +29,18 @@ export type ChartNode = {
 };
 
 export const ChartWrapper = ({ selectedProperty }: Props) => {
+  const [useMockData, setUseMockData] = useState(false);
+  const [mockScenario, setMockScenario] = useState<
+    "vertical" | "horizontal" | "mixed"
+  >("mixed");
+  const [chartType, setChartType] = useState<"scatter" | "sankey">("scatter");
+
   const {
     data: realData,
     isLoading: realDataLoading,
     isError: realDataError,
     refetch: realDataRefetch,
   } = useGetGA4TrafficData(selectedProperty);
-  const [useMockData, setUseMockData] = useState(false);
-  const [mockScenario, setMockScenario] = useState<
-    "vertical" | "horizontal" | "mixed"
-  >("mixed");
 
   const { data: mockData, isLoading: mockDataLoading } =
     useMockGA4TrafficData(mockScenario);
@@ -98,7 +101,6 @@ export const ChartWrapper = ({ selectedProperty }: Props) => {
           traffic volume.
         </p>
       </div>
-
       {/* TODO: Remove this */}
       <TestDataScenario
         useMockData={useMockData}
@@ -106,10 +108,11 @@ export const ChartWrapper = ({ selectedProperty }: Props) => {
         mockScenario={mockScenario}
         setMockScenario={setMockScenario}
       />
-
-      <GA4ScatterChart transformedData={transformedData} />
-
-      <Legend />
+      <ChartSelection chartType={chartType} setChartType={setChartType} />
+      {chartType === "scatter" && (
+        <GA4ScatterChart transformedData={transformedData} />
+      )}
+      {chartType === "sankey" && <GA4SankeyChart />}{" "}
     </div>
   );
 };
