@@ -10,23 +10,23 @@ export const getNodeColor = (
   }
 
   const baseColors = [
-    "#93c5fd", // blue-300
-    "#a5b4fc", // indigo-300
-    "#d9f99d", // lime-300
-    "#fca5a5", // red-300
-    "#5eead4", // teal-300
-    "#fdba74", // orange-300
-    "#d8b4fe", // purple-300
-    "#fde68a", // amber-300
-    "#86efac", // green-300
-    "#fef08a", // yellow-300
-    "#6ee7b7", // emerald-300
-    "#f9a8d4", // pink-300
-    "#a5f3fc", // cyan-300
-    "#fda4af", // rose-300
-    "#7dd3fc", // sky-300
-    "#f0abfc", // fuchsia-300
-    "#c4b5fd", // violet-300
+    "#60a5fa", // blue-400
+    "#a3e635", // lime-400
+    "#818cf8", // indigo-400
+    "#f87171", // red-400
+    "#2dd4bf", // teal-400
+    "#fb923c", // orange-400
+    "#a78bfa", // purple-400
+    "#fbbf24", // amber-400
+    "#4ade80", // green-400
+    "#fde047", // yellow-400
+    "#34d399", // emerald-400
+    "#f472b6", // pink-400
+    "#22d3ee", // cyan-400
+    "#fb7185", // rose-400
+    "#38bdf8", // sky-400
+    "#e879f9", // fuchsia-400
+    "#8b5cf6", // violet-400
   ];
 
   if (node.cluster === 1) {
@@ -203,7 +203,7 @@ export const getChartData = (
     xOffset: number = 0,
     parentPath?: string
   ) => {
-    const radius = Math.max(4, Math.sqrt(node.page_views / maxPageViews) * 64);
+    const radius = Math.max(5, Math.sqrt(node.page_views / maxPageViews) * 40);
 
     const y = depth * spacing + 33;
 

@@ -40,9 +40,9 @@ export const Chart = ({ transformedData }: Props) => {
   const data = getChartData(transformedData, expandedNodes);
 
   return (
-    <div className="w-full h-[48rem] border border-slate-300 rounded-lg">
+    <div className="w-full h-[36rem] border border-slate-300 rounded-lg">
       <ResponsiveContainer className="w-full h-full">
-        <ScatterChart margin={{ top: 64, right: 64, bottom: 64, left: 64 }}>
+        <ScatterChart margin={{ top: 48, right: 48, bottom: 48, left: 48 }}>
           <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
           <XAxis type="number" dataKey="x" domain={["auto", "auto"]} hide />
           <YAxis type="number" dataKey="y" domain={["auto", "auto"]} hide />

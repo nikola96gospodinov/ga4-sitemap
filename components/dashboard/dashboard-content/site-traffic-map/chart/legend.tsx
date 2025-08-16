@@ -4,11 +4,11 @@ export const Legend = () => {
       <p className="text-slate-950">Does it have subpaths?</p>
       <div className="flex gap-4">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-slate-400 rounded-full border-2 border-slate-700"></div>
+          <div className="w-4 h-4 bg-yellow-400 rounded-full border-2 border-slate-700"></div>
           <span className="text-sm text-slate-700">Has subpaths</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-slate-400 rounded-full"></div>
+          <div className="w-4 h-4 bg-yellow-400 rounded-full"></div>
           <span className="text-sm text-slate-700">
             Doesn&apos;t have subpaths
           </span>
