@@ -2,6 +2,28 @@
 
 Live URL: [On Vercel](https://ga4-sitemap.vercel.app/)
 
+## In case the app is not approved by Google by the time you're reading this
+
+Once you click on "Sign in with Google", you'll get the following screen:
+
+![Google OAuth screen](./public/instructions/step1.png)
+
+Click on "Advanced" at the bottom left corner. A new section will appear:
+
+![Google OAuth screen](./public/instructions/step2.png)
+
+Click on "Go to ga4-sitemap.vercel.app (unsafe)"
+
+You should be allowed to sign in with Google now.
+
+After selecting an account and accepting the basic permissions you will be asked to accept permissions that allow the app to access your Google Analytics data:
+
+![Google OAuth screen](./public/instructions/step3.png)
+
+Click on "Select all" and click on "Continue"
+
+You should be signed in now.
+
 # Project setup
 
 You'll need the following environment variables:
