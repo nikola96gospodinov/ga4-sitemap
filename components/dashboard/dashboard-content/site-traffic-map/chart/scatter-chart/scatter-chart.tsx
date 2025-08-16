@@ -10,7 +10,7 @@ import {
 import { ChartNode } from "../chart-wrapper";
 import { SitemapNode } from "@/lib/sitemap-mapper";
 import { useState } from "react";
-import { getChartData, getNodeColor } from "../chart.utils";
+import { getChartData, getNodeColor } from "./scatter-chart.utils";
 import { ScatterLegend } from "./scatter-legend";
 
 type Props = {

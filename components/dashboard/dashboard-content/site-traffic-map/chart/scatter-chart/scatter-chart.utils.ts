@@ -1,5 +1,5 @@
 import { SitemapNode } from "@/lib/sitemap-mapper";
-import { ChartNode } from "./chart-wrapper";
+import { ChartNode } from "../chart-wrapper";
 
 export const getNodeColor = (
   node: ChartNode,

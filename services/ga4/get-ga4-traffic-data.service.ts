@@ -786,7 +786,7 @@ export const generateMockData = (
         },
         {
           dimensionValues: [{ value: "/services/design/ui/web" }],
-          metricValues: [{ value: "400" }],
+          metricValues: [{ value: "800" }],
         },
         {
           dimensionValues: [{ value: "/services/design/ui/mobile" }],

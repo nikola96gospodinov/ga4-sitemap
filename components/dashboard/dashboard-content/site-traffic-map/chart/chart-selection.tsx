@@ -2,13 +2,13 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 type Props = {
-  chartType: "scatter" | "sankey";
-  setChartType: React.Dispatch<React.SetStateAction<"scatter" | "sankey">>;
+  chartType: "scatter" | "treemap";
+  setChartType: React.Dispatch<React.SetStateAction<"scatter" | "treemap">>;
 };
 
 export const ChartSelection = ({ chartType, setChartType }: Props) => {
   return (
-    <div className="flex flex-col gap-2 items-center justify-start mt-8">
+    <div className="flex flex-col gap-2 items-center justify-start mt-8 mb-2">
       <p className="text-sm text-slate-600">Chart Type:</p>
       <div className="inline-flex bg-slate-100 rounded-full p-1">
         <Button
@@ -26,16 +26,16 @@ export const ChartSelection = ({ chartType, setChartType }: Props) => {
         </Button>
         <Button
           type="button"
-          onClick={() => setChartType("sankey")}
+          onClick={() => setChartType("treemap")}
           className={cn(
             "w-24 py-0.5 rounded-full text-sm font-medium transition-colors duration-150 focus:outline-none shadow-none hover:shadow-none hover:translate-y-[0]",
-            chartType === "sankey"
+            chartType === "treemap"
               ? "bg-slate-950 text-slate-50 shadow"
               : "bg-transparent text-slate-950"
           )}
-          aria-pressed={chartType === "sankey"}
+          aria-pressed={chartType === "treemap"}
         >
-          Sankey
+          Treemap
         </Button>
       </div>
     </div>

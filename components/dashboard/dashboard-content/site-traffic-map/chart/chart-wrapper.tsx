@@ -8,7 +8,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { GA4ScatterChart } from "./scatter-chart/scatter-chart";
 import { TestDataScenario } from "./test-data-scenario";
-import { GA4SankeyChart } from "./snakey-chart";
+import { GA4TreemapChart } from "./treemap";
 import { ChartSelection } from "./chart-selection";
 
 type Props = {
@@ -33,7 +33,7 @@ export const ChartWrapper = ({ selectedProperty }: Props) => {
   const [mockScenario, setMockScenario] = useState<
     "vertical" | "horizontal" | "mixed"
   >("mixed");
-  const [chartType, setChartType] = useState<"scatter" | "sankey">("scatter");
+  const [chartType, setChartType] = useState<"scatter" | "treemap">("scatter");
 
   const {
     data: realData,
@@ -112,7 +112,9 @@ export const ChartWrapper = ({ selectedProperty }: Props) => {
       {chartType === "scatter" && (
         <GA4ScatterChart transformedData={transformedData} />
       )}
-      {chartType === "sankey" && <GA4SankeyChart />}{" "}
+      {chartType === "treemap" && (
+        <GA4TreemapChart transformedData={transformedData} />
+      )}
     </div>
   );
 };
