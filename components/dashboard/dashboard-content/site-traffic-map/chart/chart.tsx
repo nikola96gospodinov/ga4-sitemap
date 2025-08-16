@@ -10,7 +10,7 @@ import {
 import { ChartNode } from "./chart-wrapper";
 import { SitemapNode } from "@/lib/sitemap-mapper";
 import { useState } from "react";
-import { getNodeColor } from "./chart.utils";
+import { getChartData, getNodeColor } from "./chart.utils";
 
 type Props = {
   transformedData: SitemapNode[];
@@ -18,91 +18,6 @@ type Props = {
 
 export const Chart = ({ transformedData }: Props) => {
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
-
-  const getMaxPageViews = (node: SitemapNode): number => {
-    let max = node.page_views;
-    for (const child of node.children) {
-      max = Math.max(max, getMaxPageViews(child));
-    }
-    return max;
-  };
-
-  const getNodeWidth = (node: SitemapNode): number => {
-    if (!expandedNodes.has(node.path) || node.children.length === 0) {
-      return Math.max(20, Math.sqrt(node.page_views / 1000) * 80);
-    }
-
-    let totalWidth = 0;
-    for (const child of node.children) {
-      totalWidth += getNodeWidth(child);
-    }
-    return Math.max(
-      totalWidth,
-      Math.max(20, Math.sqrt(node.page_views / 1000) * 80)
-    );
-  };
-
-  const chartData = () => {
-    if (!transformedData.length) return [];
-
-    const nodes: ChartNode[] = [];
-    const maxPageViews = Math.max(
-      ...transformedData.map((node) => getMaxPageViews(node))
-    );
-
-    const processNode = (
-      node: SitemapNode,
-      depth: number,
-      xOffset: number = 0,
-      parentPath?: string
-    ) => {
-      const radius = Math.max(
-        4,
-        Math.sqrt(node.page_views / maxPageViews) * 64
-      );
-
-      const y = depth * 100 + 50;
-
-      const x = xOffset + radius;
-
-      nodes.push({
-        x,
-        y,
-        r: radius,
-        path: node.path,
-        depth: node.depth,
-        page_views: node.page_views,
-        isExpanded: expandedNodes.has(node.path),
-        hasChildren: node.children.length > 0,
-        cluster: depth,
-        parentPath,
-      });
-
-      if (expandedNodes.has(node.path) && node.children.length > 0) {
-        const totalWidth = node.children.reduce(
-          (sum, child) => sum + getNodeWidth(child),
-          0
-        );
-        let currentOffset = xOffset - totalWidth / 2;
-
-        for (const child of node.children) {
-          const childWidth = getNodeWidth(child);
-          processNode(
-            child,
-            depth + 1,
-            currentOffset + childWidth / 2,
-            node.path
-          );
-          currentOffset += childWidth;
-        }
-      }
-    };
-
-    for (const node of transformedData) {
-      processNode(node, 0);
-    }
-    return nodes;
-  };
 
   const handleNodeClick = (node: ChartNode) => {
     if (!node.hasChildren) return;
@@ -122,10 +37,10 @@ export const Chart = ({ transformedData }: Props) => {
     return value.toString();
   };
 
-  const data = chartData();
+  const data = getChartData(transformedData, expandedNodes);
 
   return (
-    <div className="w-full h-[48rem]">
+    <div className="w-full h-[48rem] border border-slate-300 rounded-lg">
       <ResponsiveContainer className="w-full h-full">
         <ScatterChart margin={{ top: 64, right: 64, bottom: 64, left: 64 }}>
           <CartesianGrid strokeDasharray="3 3" opacity={0.3} />

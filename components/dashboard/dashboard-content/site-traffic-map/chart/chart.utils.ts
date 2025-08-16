@@ -1,3 +1,4 @@
+import { SitemapNode } from "@/lib/sitemap-mapper";
 import { ChartNode } from "./chart-wrapper";
 
 export const getNodeColor = (
@@ -135,4 +136,127 @@ const hslToHex = (h: number, s: number, l: number): string => {
   };
 
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+};
+
+const getMaxPageViews = (node: SitemapNode): number => {
+  let max = node.page_views;
+  for (const child of node.children) {
+    max = Math.max(max, getMaxPageViews(child));
+  }
+  return max;
+};
+
+const getNodeWidth = (
+  node: SitemapNode,
+  expandedNodes: Set<string>
+): number => {
+  if (!expandedNodes.has(node.path) || node.children.length === 0) {
+    return Math.max(20, Math.sqrt(node.page_views / 1000) * 80);
+  }
+
+  let totalWidth = 0;
+  for (const child of node.children) {
+    totalWidth += getNodeWidth(child, expandedNodes);
+  }
+  return Math.max(
+    totalWidth,
+    Math.max(20, Math.sqrt(node.page_views / 1000) * 80)
+  );
+};
+
+export const getChartData = (
+  transformedData: SitemapNode[],
+  expandedNodes: Set<string>
+) => {
+  if (!transformedData.length) return [];
+
+  const nodes: ChartNode[] = [];
+  const maxPageViews = Math.max(
+    ...transformedData.map((node) => getMaxPageViews(node))
+  );
+
+  const getMaxDepth = (nodes: SitemapNode[], currentDepth = 0): number => {
+    let maxDepth = currentDepth;
+    for (const node of nodes) {
+      if (node.children.length > 0) {
+        maxDepth = Math.max(
+          maxDepth,
+          getMaxDepth(node.children, currentDepth + 1)
+        );
+      }
+    }
+    return maxDepth;
+  };
+
+  const maxDepth = getMaxDepth(transformedData);
+
+  const baseSpacing = maxDepth <= 3 ? 40 : 100;
+  const totalHeight = 400;
+  const spacing = Math.min(
+    baseSpacing,
+    totalHeight / Math.max(maxDepth + 1, 4)
+  );
+
+  const processNode = (
+    node: SitemapNode,
+    depth: number,
+    xOffset: number = 0,
+    parentPath?: string
+  ) => {
+    const radius = Math.max(4, Math.sqrt(node.page_views / maxPageViews) * 64);
+
+    const y = depth * spacing + 33;
+
+    let x = xOffset + radius;
+
+    const nodesAtSameDepth = nodes.filter((n) => n.depth === depth);
+    for (const existingNode of nodesAtSameDepth) {
+      const minDistance = radius + existingNode.r + 12;
+      const currentDistance = Math.abs(x - existingNode.x);
+      if (currentDistance < minDistance) {
+        if (x < existingNode.x) {
+          x = existingNode.x - minDistance;
+        } else {
+          x = existingNode.x + minDistance;
+        }
+      }
+    }
+
+    nodes.push({
+      x,
+      y,
+      r: radius,
+      path: node.path,
+      depth: node.depth,
+      page_views: node.page_views,
+      isExpanded: expandedNodes.has(node.path),
+      hasChildren: node.children.length > 0,
+      cluster: depth,
+      parentPath,
+    });
+
+    if (expandedNodes.has(node.path) && node.children.length > 0) {
+      const totalWidth = node.children.reduce(
+        (sum, child) => sum + getNodeWidth(child, expandedNodes),
+        0
+      );
+      let currentOffset = xOffset - totalWidth / 2;
+
+      for (const child of node.children) {
+        const childWidth = getNodeWidth(child, expandedNodes);
+        processNode(
+          child,
+          depth + 1,
+          currentOffset + childWidth / 2,
+          node.path
+        );
+        currentOffset += childWidth;
+      }
+    }
+  };
+
+  for (const node of transformedData) {
+    processNode(node, 0);
+  }
+  return nodes;
 };
