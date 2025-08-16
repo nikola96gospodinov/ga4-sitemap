@@ -2,7 +2,7 @@
 
 import { useGetGA4Accounts } from "@/services/ga4/get-ga4-accounts.service";
 import { UsersRound } from "lucide-react";
-import { Spinner } from "../../../ui/spinner";
+import { Spinner } from "../../../../ui/spinner";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";

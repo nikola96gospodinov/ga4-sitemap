@@ -1,5 +1,5 @@
 import { auth, signIn } from "@/auth";
-import { GoogleLogo } from "@/components/icons/google-logo";
+import { GoogleLogo } from "@/components/ui/icons/google-logo";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { LandingBackground } from "@/components/ui/layout/background-pattern";
