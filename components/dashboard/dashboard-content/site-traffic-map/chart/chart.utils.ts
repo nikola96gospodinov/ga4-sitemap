@@ -1,0 +1,138 @@
+import { ChartNode } from "./chart-wrapper";
+
+export const getNodeColor = (
+  node: ChartNode,
+  allNodes: ChartNode[]
+): string => {
+  if (node.cluster === 0) {
+    return "#cbd5e1";
+  }
+
+  const baseColors = [
+    "#93c5fd", // blue-300
+    "#a5b4fc", // indigo-300
+    "#d9f99d", // lime-300
+    "#fca5a5", // red-300
+    "#5eead4", // teal-300
+    "#fdba74", // orange-300
+    "#d8b4fe", // purple-300
+    "#fde68a", // amber-300
+    "#86efac", // green-300
+    "#fef08a", // yellow-300
+    "#6ee7b7", // emerald-300
+    "#f9a8d4", // pink-300
+    "#a5f3fc", // cyan-300
+    "#fda4af", // rose-300
+    "#7dd3fc", // sky-300
+    "#f0abfc", // fuchsia-300
+    "#c4b5fd", // violet-300
+  ];
+
+  if (node.cluster === 1) {
+    const cluster1Nodes = allNodes.filter((n) => n.cluster === 1);
+    const nodeIndex = cluster1Nodes.findIndex((n) => n.path === node.path);
+    return baseColors[nodeIndex % baseColors.length];
+  }
+
+  if (node.parentPath) {
+    const parentNode = allNodes.find((n) => n.path === node.parentPath);
+    if (parentNode && parentNode.cluster !== 0) {
+      const parentColor = getNodeColor(parentNode, allNodes);
+      const siblings = allNodes.filter((n) => n.parentPath === node.parentPath);
+      const siblingIndex = siblings.findIndex((n) => n.path === node.path);
+      return createVariedColor(parentColor, siblingIndex, siblings.length);
+    }
+  }
+
+  return baseColors[node.cluster % baseColors.length];
+};
+
+const createVariedColor = (
+  baseColor: string,
+  index: number,
+  totalSiblings: number
+): string => {
+  const hsl = hexToHsl(baseColor);
+
+  const hueVariation = (index / totalSiblings) * 30 - 15;
+  const saturationVariation = index % 2 === 0 ? 1 : 0.8;
+  const lightnessVariation = 0.9 + index * 0.05;
+
+  const newHue = (hsl.h + hueVariation + 360) % 360;
+  const newSaturation = Math.min(100, Math.max(0, hsl.s * saturationVariation));
+  const newLightness = Math.min(100, Math.max(0, hsl.l * lightnessVariation));
+
+  return hslToHex(newHue, newSaturation, newLightness);
+};
+
+const hexToHsl = (hex: string): { h: number; s: number; l: number } => {
+  hex = hex.replace("#", "");
+
+  const r = parseInt(hex.substr(0, 2), 16) / 255;
+  const g = parseInt(hex.substr(2, 2), 16) / 255;
+  const b = parseInt(hex.substr(4, 2), 16) / 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+        h = (r - g) / d + 4;
+        break;
+    }
+    h /= 6;
+  }
+
+  return {
+    h: h * 360,
+    s: s * 100,
+    l: l * 100,
+  };
+};
+
+const hslToHex = (h: number, s: number, l: number): string => {
+  h = h / 360;
+  s = s / 100;
+  l = l / 100;
+
+  const hue2rgb = (p: number, q: number, t: number): number => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1 / 6) return p + (q - p) * 6 * t;
+    if (t < 1 / 2) return q;
+    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+    return p;
+  };
+
+  let r, g, b;
+
+  if (s === 0) {
+    r = g = b = l;
+  } else {
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    r = hue2rgb(p, q, h + 1 / 3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1 / 3);
+  }
+
+  const toHex = (c: number): string => {
+    const hex = Math.round(c * 255).toString(16);
+    return hex.length === 1 ? "0" + hex : hex;
+  };
+
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+};

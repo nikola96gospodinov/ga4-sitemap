@@ -10,6 +10,7 @@ import {
 import { ChartNode } from "./chart-wrapper";
 import { SitemapNode } from "@/lib/sitemap-mapper";
 import { useState } from "react";
+import { getNodeColor } from "./chart.utils";
 
 type Props = {
   transformedData: SitemapNode[];
@@ -57,7 +58,7 @@ export const Chart = ({ transformedData }: Props) => {
     ) => {
       const radius = Math.max(
         4,
-        Math.sqrt(node.page_views / maxPageViews) * 60
+        Math.sqrt(node.page_views / maxPageViews) * 64
       );
 
       const y = depth * 100 + 50;
@@ -115,62 +116,6 @@ export const Chart = ({ transformedData }: Props) => {
     setExpandedNodes(newExpandedNodes);
   };
 
-  const getNodeColor = (node: ChartNode, allNodes: ChartNode[]): string => {
-    if (node.cluster === 0) {
-      return "#cbd5e1";
-    }
-
-    const baseColors = [
-      "#fca5a5", // red-300
-      "#d9f99d", // lime-300
-      "#fdba74", // orange-300
-      "#5eead4", // teal-300
-      "#fde68a", // amber-300
-      "#d8b4fe", // purple-300
-      "#86efac", // green-300
-      "#fef08a", // yellow-300
-      "#93c5fd", // blue-300
-      "#6ee7b7", // emerald-300
-      "#f9a8d4", // pink-300
-      "#a5f3fc", // cyan-300
-      "#fda4af", // rose-300
-      "#7dd3fc", // sky-300
-      "#a5b4fc", // indigo-300
-      "#f0abfc", // fuchsia-300
-      "#c4b5fd", // violet-300
-    ];
-
-    if (node.cluster === 1) {
-      const cluster1Nodes = allNodes.filter((n) => n.cluster === 1);
-      const nodeIndex = cluster1Nodes.findIndex((n) => n.path === node.path);
-      return baseColors[nodeIndex % baseColors.length];
-    }
-
-    if (node.parentPath) {
-      const parentNode = allNodes.find((n) => n.path === node.parentPath);
-      if (parentNode && parentNode.cluster !== 0) {
-        const parentColor = getNodeColor(parentNode, allNodes);
-        return adjustColorBrightness(parentColor, 0.9);
-      }
-    }
-
-    return baseColors[node.cluster % baseColors.length];
-  };
-
-  const adjustColorBrightness = (hexColor: string, factor: number): string => {
-    const r = parseInt(hexColor.slice(1, 3), 16);
-    const g = parseInt(hexColor.slice(3, 5), 16);
-    const b = parseInt(hexColor.slice(5, 7), 16);
-
-    const newR = Math.round(r * factor);
-    const newG = Math.round(g * factor);
-    const newB = Math.round(b * factor);
-
-    return `#${newR.toString(16).padStart(2, "0")}${newG
-      .toString(16)
-      .padStart(2, "0")}${newB.toString(16).padStart(2, "0")}`;
-  };
-
   const formatPageViews = (value: number) => {
     if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
     if (value >= 1000) return `${(value / 1000).toFixed(1)}K`;
@@ -197,13 +142,8 @@ export const Chart = ({ transformedData }: Props) => {
                       Page Views: {formatPageViews(tooltipData.page_views)}
                     </p>
                     <p className="text-sm text-slate-600">
-                      Cluster (depth): {tooltipData.cluster}
+                      Depth: {tooltipData.cluster}
                     </p>
-                    {tooltipData.parentPath && (
-                      <p className="text-sm text-slate-600">
-                        Parent: {tooltipData.parentPath}
-                      </p>
-                    )}
 
                     {tooltipData.hasChildren && (
                       <p className="text-sm text-slate-500">
