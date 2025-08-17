@@ -2,6 +2,10 @@
 
 Live URL: [On Vercel](https://ga4-sitemap.vercel.app/)
 
+Production demo: [Loom](https://www.loom.com/share/e2168e69ee924ebcb53eea9b8329fa04?sid=fc882139-a700-4280-86c9-8249d1938a41)
+
+Local demo: [Loom](https://www.loom.com/share/9842cbf77e284cfbb0da46280241be7e?sid=0f03136b-6d37-469d-86f7-4dbcf5a65c03)
+
 ## In case the app is not approved by Google by the time you're reading this
 
 Once you click on "Sign in with Google", you'll get the following screen:
