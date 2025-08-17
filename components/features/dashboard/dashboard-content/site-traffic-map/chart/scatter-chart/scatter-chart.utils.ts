@@ -181,7 +181,7 @@ export const getChartData = (
     xOffset: number = 0,
     parentPath?: string
   ) => {
-    const radius = Math.max(5, Math.sqrt(node.page_views / maxPageViews) * 40);
+    const radius = Math.max(7, Math.sqrt(node.page_views / maxPageViews) * 44);
 
     const y = depth;
 
@@ -189,7 +189,7 @@ export const getChartData = (
 
     const nodesAtSameDepth = nodes.filter((n) => n.depth === depth);
     for (const existingNode of nodesAtSameDepth) {
-      const minDistance = radius + existingNode.r + 12;
+      const minDistance = radius + existingNode.r + 48;
       const currentDistance = Math.abs(x - existingNode.x);
       if (currentDistance < minDistance) {
         if (x < existingNode.x) {
